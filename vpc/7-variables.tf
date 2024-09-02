@@ -14,19 +14,6 @@ variable "azs" {
   type        = list(string)
 }
 
-variable "private_subnets1" {
-  description = "CIDR ranges for private subnets."
-  type        = list(string)
-}
-variable "private_subnets1" {
-  description = "CIDR ranges for private subnets."
-  type        = list(string)
-}
-variable "public_subnets1" {
-  description = "CIDR ranges for public subnets."
-  type        = list(string)
-}
-
 variable "private_subnet_tags" {
   description = "Private subnet tags."
   type        = map(any)
