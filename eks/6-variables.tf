@@ -13,9 +13,33 @@ variable "eks_name" {
   type        = string
 }
 
+variable "endpoint_private_access" {
+  description = "EKS endpoint private access"
+  type        = bool
+  default     = false
+}
+
+variable "endpoint_public_access" {
+  description = "EKS endpoint public access"
+  type        = bool
+  default     = true
+}
+
 variable "subnet_ids" {
   description = "List of subnet IDs. Must be in at least two different availability zones."
   type        = list(string)
+}
+
+variable "authentication_mode" {
+  description = "EKS authentication mode"
+  type        = string
+  default     = "API"
+}
+
+variable "bootstrap_cluster_creator_admin_permissions" {
+  description = "EKS bootstrap cluster creator admin permissions"
+  type        = bool
+  default     = true
 }
 
 variable "node_iam_policies" {
@@ -25,7 +49,6 @@ variable "node_iam_policies" {
     1 = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
     2 = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
     3 = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
-    4 = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
   }
 }
 
@@ -34,8 +57,3 @@ variable "node_groups" {
   type        = map(any)
 }
 
-variable "enable_irsa" {
-  description = "Determines whether to create an OpenID Connect Provider for EKS to enable IRSA"
-  type        = bool
-  default     = true
-}

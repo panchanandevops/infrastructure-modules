@@ -1,6 +1,7 @@
 resource "aws_eks_node_group" "this" {
   for_each = var.node_groups
 
+  version         = var.eks_version
   cluster_name    = aws_eks_cluster.this.name
   node_group_name = each.key
   node_role_arn   = aws_iam_role.nodes.arn
@@ -25,4 +26,9 @@ resource "aws_eks_node_group" "this" {
   }
 
   depends_on = [aws_iam_role_policy_attachment.nodes]
+
+  # Allow external changes without Terraform plan difference
+  lifecycle {
+    ignore_changes = [scaling_config.desired_size]
+  }
 }
