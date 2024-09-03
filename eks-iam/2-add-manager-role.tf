@@ -77,7 +77,7 @@ resource "aws_iam_user_policy_attachment" "manager" {
 
 # Best practice: use IAM roles due to temporary credentials
 resource "aws_eks_access_entry" "manager" {
-  cluster_name      = aws_eks_cluster.this.name
+  cluster_name      = var.eks_name
   principal_arn     = aws_iam_role.eks_admin.arn
   kubernetes_groups = ["my-admin"]
 }
