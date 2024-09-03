@@ -1,4 +1,6 @@
 resource "aws_iam_role" "cluster_autoscaler" {
+  count = var.enable_cluster_autoscaler ? 1 : 0
+
   name = "${var.env}-${var.eks_name}-cluster-autoscaler"
 
   assume_role_policy = jsonencode({
@@ -19,6 +21,8 @@ resource "aws_iam_role" "cluster_autoscaler" {
 }
 
 resource "aws_iam_policy" "cluster_autoscaler" {
+  count = var.enable_cluster_autoscaler ? 1 : 0
+
   name = "${var.env}-${var.eks_name}-cluster-autoscaler"
 
   policy = jsonencode({
@@ -53,11 +57,15 @@ resource "aws_iam_policy" "cluster_autoscaler" {
 }
 
 resource "aws_iam_role_policy_attachment" "cluster_autoscaler" {
+  count = var.enable_cluster_autoscaler ? 1 : 0
+
   policy_arn = aws_iam_policy.cluster_autoscaler.arn
   role       = aws_iam_role.cluster_autoscaler.name
 }
 
 resource "aws_eks_pod_identity_association" "cluster_autoscaler" {
+  count = var.enable_cluster_autoscaler ? 1 : 0
+
   cluster_name    = var.eks_name
   namespace       = "kube-system"
   service_account = "cluster-autoscaler"
@@ -65,6 +73,8 @@ resource "aws_eks_pod_identity_association" "cluster_autoscaler" {
 }
 
 resource "helm_release" "cluster_autoscaler" {
+  count = var.enable_cluster_autoscaler ? 1 : 0
+  
   name = "${var.env}-${var.eks_name}-autoscaler"
 
   repository = "https://kubernetes.github.io/autoscaler"

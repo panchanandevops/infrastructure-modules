@@ -1,4 +1,6 @@
 resource "helm_release" "external_nginx" {
+  count = var.enable_external_nginx ? 1 : 0
+  
   name = "external"
 
   repository       = "https://kubernetes.github.io/ingress-nginx"
