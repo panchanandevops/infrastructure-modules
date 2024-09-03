@@ -59,8 +59,8 @@ resource "aws_iam_policy" "cluster_autoscaler" {
 resource "aws_iam_role_policy_attachment" "cluster_autoscaler" {
   count = var.enable_cluster_autoscaler ? 1 : 0
 
-  policy_arn = aws_iam_policy.cluster_autoscaler.arn
-  role       = aws_iam_role.cluster_autoscaler.name
+  policy_arn = aws_iam_policy.cluster_autoscaler[0].arn
+  role       = aws_iam_role.cluster_autoscaler[0].name
 }
 
 resource "aws_eks_pod_identity_association" "cluster_autoscaler" {
@@ -69,7 +69,7 @@ resource "aws_eks_pod_identity_association" "cluster_autoscaler" {
   cluster_name    = var.eks_name
   namespace       = "kube-system"
   service_account = "cluster-autoscaler"
-  role_arn        = aws_iam_role.cluster_autoscaler.arn
+  role_arn        = aws_iam_role.cluster_autoscaler[0].arn
 }
 
 resource "helm_release" "cluster_autoscaler" {
@@ -80,7 +80,7 @@ resource "helm_release" "cluster_autoscaler" {
   repository = "https://kubernetes.github.io/autoscaler"
   chart      = "cluster-autoscaler"
   namespace  = "kube-system"
-  version    = "9.37.0"
+  version    = var.cluster_autoscaler_helm_verion
 
   set {
     name  = "rbac.serviceAccount.name"
