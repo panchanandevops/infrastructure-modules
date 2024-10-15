@@ -26,15 +26,15 @@ resource "aws_eks_cluster" "this" {
   role_arn = aws_iam_role.this.arn
 
   vpc_config {
-    endpoint_private_access = false
-    endpoint_public_access  = true
+    endpoint_private_access = var.eks_cluster_permissions.endpoint_private_access
+    endpoint_public_access  = var.eks_cluster_permissions.endpoint_public_access
 
-    subnet_ids = var.subnet_ids
+    subnet_ids = var.private_subnet_ids
   }
 
   access_config {
-    authentication_mode                         = var.authentication_mode
-    bootstrap_cluster_creator_admin_permissions = var.bootstrap_cluster_creator_admin_permissions
+    authentication_mode                         = var.eks_cluster_permissions.authentication_mode
+    bootstrap_cluster_creator_admin_permissions = var.eks_cluster_permissions.bootstrap_cluster_creator_admin_permissions
   }
 
   depends_on = [aws_iam_role_policy_attachment.this]

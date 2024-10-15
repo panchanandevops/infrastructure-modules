@@ -8,56 +8,43 @@ variable "eks_name" {
   type        = string
 }
 
-variable "region" {
-  description = "Name of the aws region"
-  type        = string
-  default     = "us-east-1"
+variable "cluster_autoscaler" {
+  description = "Defines all the parameters for Cluster Autoscaler"
+  type        = map(any)
+  default = {
+    enable              = true
+    region              = "us-east-1"
+    helm_chart_version  = "9.37.0"
+    path_to_values_file = "${path.module}/values/cluster_autoscaler.yaml"
+  }
 }
 
-variable "enable_cluster_autoscaler" {
-  description = "Determines whether to deploy cluster autoscaler"
-  type        = bool
-  default     = false
+variable "metrics_server" {
+  description = "Defines all the parameters for metrics server"
+  type        = map(any)
+  default = {
+    enable              = true
+    helm_chart_version  = "3.12.1"
+    path_to_values_file = "${path.module}/values/metrics_server.yaml"
+  }
 }
 
-variable "cluster_autoscaler_helm_verion" {
-  description = "Cluster Autoscaler Helm verion"
-  type        = string
-  default     = "9.37.0"
+variable "aws_lbc" {
+  description = "Defines all the parameters for AWS LoadBalancer Controller"
+  type        = map(any)
+  default = {
+      enable              = true
+      helm_chart_version  = "1.7.2"
+      path_to_values_file = "${path.module}/values/aws_lbc.yaml"
+    }
 }
 
-variable "enable_metrics_server" {
-  description = "Determines whether to deploy cluster autoscaler"
-  type        = bool
-  default     = false
-}
-
-variable "metrics_server_helm_verion" {
-  description = "Cluster Autoscaler Helm verion"
-  type        = string
-  default     = "3.12.1"
-}
-
-variable "enable_aws_lbc" {
-  description = "Determines whether to deploy cluster autoscaler"
-  type        = bool
-  default     = false
-}
-
-variable "aws_lbc_helm_verion" {
-  description = "Cluster Autoscaler Helm verion"
-  type        = string
-  default     = "1.7.2"
-}
-
-variable "enable_external_nginx" {
-  description = "Determines whether to deploy cluster autoscaler"
-  type        = bool
-  default     = false
-}
-
-variable "external_nginx_helm_verion" {
-  description = "Cluster Autoscaler Helm verion"
-  type        = string
-  default     = "4.10.1"
+variable "external_nginx_ingress_controller" {
+  description = "Defines all the parameters for Nginx Ingress Controller"
+  type        = map(any)
+  default = {
+    enable              = true
+    helm_chart_version  = "4.10.1"
+    path_to_values_file = "${path.module}/values/nginx_ingress_controller.yaml"
+  }
 }

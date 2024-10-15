@@ -1,12 +1,11 @@
 resource "helm_release" "metrics_server" {
-  count = var.enable_metrics_server ? 1 : 0
+  count = var.metrics_server.enable ? 1 : 0
 
-  name = "${var.env}-metrics-server"
-
+  name       = "${var.env}-metrics-server"
   repository = "https://kubernetes-sigs.github.io/metrics-server/"
   chart      = "metrics-server"
   namespace  = "kube-system"
-  version    = var.metrics_server_helm_verion
+  version    = var.metrics_server.helm_chart_version
 
-  values = [file("${path.module}/values/metrics-server.yaml")]
+  values = [file(var.metrics_server.path_to_values_file)]
 }

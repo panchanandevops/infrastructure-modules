@@ -1,5 +1,5 @@
 resource "aws_iam_role" "cluster_autoscaler" {
-  count = var.enable_cluster_autoscaler ? 1 : 0
+  count = var.cluster_autoscaler.enable ? 1 : 0
 
   name = "${var.env}-${var.eks_name}-cluster-autoscaler"
 
@@ -21,7 +21,7 @@ resource "aws_iam_role" "cluster_autoscaler" {
 }
 
 resource "aws_iam_policy" "cluster_autoscaler" {
-  count = var.enable_cluster_autoscaler ? 1 : 0
+  count = var.cluster_autoscaler.enable ? 1 : 0
 
   name = "${var.env}-${var.eks_name}-cluster-autoscaler"
 
@@ -57,14 +57,14 @@ resource "aws_iam_policy" "cluster_autoscaler" {
 }
 
 resource "aws_iam_role_policy_attachment" "cluster_autoscaler" {
-  count = var.enable_cluster_autoscaler ? 1 : 0
+  count = var.cluster_autoscaler.enable ? 1 : 0
 
   policy_arn = aws_iam_policy.cluster_autoscaler[0].arn
   role       = aws_iam_role.cluster_autoscaler[0].name
 }
 
 resource "aws_eks_pod_identity_association" "cluster_autoscaler" {
-  count = var.enable_cluster_autoscaler ? 1 : 0
+  count = var.cluster_autoscaler.enable ? 1 : 0
 
   cluster_name    = var.eks_name
   namespace       = "kube-system"
@@ -73,15 +73,16 @@ resource "aws_eks_pod_identity_association" "cluster_autoscaler" {
 }
 
 resource "helm_release" "cluster_autoscaler" {
-  count = var.enable_cluster_autoscaler ? 1 : 0
+  count = var.cluster_autoscaler.enable ? 1 : 0
   
   name = "${var.env}-${var.eks_name}-autoscaler"
 
   repository = "https://kubernetes.github.io/autoscaler"
   chart      = "cluster-autoscaler"
   namespace  = "kube-system"
-  version    = var.cluster_autoscaler_helm_verion
-
+  version    = var.cluster_autoscaler.helm_chart_version
+  values = [file(var.cluster_autoscaler.path_to_values_file)]
+  
   set {
     name  = "rbac.serviceAccount.name"
     value = "cluster-autoscaler"
@@ -95,7 +96,7 @@ resource "helm_release" "cluster_autoscaler" {
   # MUST be updated to match your region 
   set {
     name  = "awsRegion"
-    value = var.region
+    value = var.cluster_autoscaler.region
   }
 
   depends_on = [helm_release.metrics_server]

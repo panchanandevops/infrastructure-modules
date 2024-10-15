@@ -6,7 +6,7 @@ resource "aws_eks_node_group" "this" {
   node_group_name = each.key
   node_role_arn   = aws_iam_role.nodes.arn
 
-  subnet_ids = var.subnet_ids
+  subnet_ids = var.private_subnet_ids
 
   capacity_type  = each.value.capacity_type
   instance_types = each.value.instance_types
@@ -18,7 +18,7 @@ resource "aws_eks_node_group" "this" {
   }
 
   update_config {
-    max_unavailable = 1
+    max_unavailable = each.value.update_config.max_unavailable
   }
 
   labels = {
